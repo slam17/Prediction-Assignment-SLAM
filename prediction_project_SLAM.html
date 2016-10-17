@@ -146,9 +146,9 @@ download.file(url = &quot;https://d396qusza40orc.cloudfront.net/predmachlearn/pm
 dt_testing &lt;- read.csv(&quot;./pml-testing.csv&quot;, na.strings=c(&quot;NA&quot;,&quot;#DIV/0!&quot;,&quot;&quot;))
 
 # Clean data
-features &lt;- names(dt_testing[,colSums(is.na(dt_testing)) == 0])[8:59]
-dt_training_subset &lt;- dt_training[,c(features,&quot;classe&quot;)]
-dt_testing_subset &lt;- dt_testing[,c(features,&quot;problem_id&quot;)]</code></pre>
+variables &lt;- names(dt_testing[,colSums(is.na(dt_testing)) == 0])[8:59]
+dt_training_subset &lt;- dt_training[,c(variables,&quot;classe&quot;)]
+dt_testing_subset &lt;- dt_testing[,c(variables,&quot;problem_id&quot;)]</code></pre>
 </div>
 <div id="decision-tree-model" class="section level2">
 <h2>Decision Tree Model</h2>

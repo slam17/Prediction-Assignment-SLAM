@@ -30,9 +30,9 @@ download.file(url = "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-tes
 dt_testing <- read.csv("./pml-testing.csv", na.strings=c("NA","#DIV/0!",""))
 
 # Clean data
-features <- names(dt_testing[,colSums(is.na(dt_testing)) == 0])[8:59]
-dt_training_subset <- dt_training[,c(features,"classe")]
-dt_testing_subset <- dt_testing[,c(features,"problem_id")]
+variables <- names(dt_testing[,colSums(is.na(dt_testing)) == 0])[8:59]
+dt_training_subset <- dt_training[,c(variables,"classe")]
+dt_testing_subset <- dt_testing[,c(variables,"problem_id")]
 
 ```
 

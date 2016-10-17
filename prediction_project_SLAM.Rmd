@@ -7,7 +7,7 @@ output: html_document
 
 ## Executive Summary
 
-M 
+I used two different models to predict the 20 test cases. The models predicted results with about 75% accuracy. 
 
 ## Data Processing
 

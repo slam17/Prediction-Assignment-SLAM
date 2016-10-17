@@ -1,0 +1,94 @@
+---
+title: "Exercise Data Analysis_SLAM"
+author: "SLAM"
+date: "October 17, 2016"
+output: html_document
+---
+
+## Executive Summary
+
+M 
+
+## Data Processing
+
+I removed the columns with "NA" and columns that were not in the testing dataset.
+
+```{r processing, echo = TRUE, cache = TRUE}
+
+# Download the training data
+download.file(url = "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv", 
+              destfile = "./pml-training.csv", method = "curl")
+
+# Load the training dataset
+dt_training <- read.csv("./pml-training.csv", na.strings=c("NA","#DIV/0!",""))
+
+# Download the testing data
+download.file(url = "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv", 
+              destfile = "./pml-testing.csv", method = "curl")
+
+# Load the testing dataset
+dt_testing <- read.csv("./pml-testing.csv", na.strings=c("NA","#DIV/0!",""))
+
+# Clean data
+features <- names(dt_testing[,colSums(is.na(dt_testing)) == 0])[8:59]
+dt_training_subset <- dt_training[,c(features,"classe")]
+dt_testing_subset <- dt_testing[,c(features,"problem_id")]
+
+```
+
+## Decision Tree Model
+
+I used a decision tree to build the model, with 60% of the training data used for training and 40% used for validation.
+
+```{r model, echo = TRUE, cache = TRUE}
+library(caret)
+library(rpart)
+library(rattle)
+
+#split training data to test and train
+set.seed(17)
+
+inTrain <- createDataPartition(dt_training$classe, p=0.6, list=FALSE)
+training <- dt_training_subset[inTrain,]
+testing <- dt_training_subset[-inTrain,]
+
+#build model
+model <- rpart(classe ~ ., data = training, method="class")
+fancyRpartPlot(model)
+
+prediction <- predict(model, testing, type = "class")
+confusionMatrix(prediction, testing$classe)
+```
+
+## Cross Validation
+
+I then cross-validated the data with a random forest model. 
+
+```{r cross, echo = TRUE, cache = TRUE}
+library(randomForest)
+
+set.seed(17)
+
+model_RF <- randomForest(classe ~ ., data = training, ntree = 1000)
+
+#predict 
+prediction_RF <- predict(model_RF, testing, type = "class")
+confusionMatrix(prediction, testing$classe)
+
+```
+
+## Predict
+
+I used both models to predict the 20 test cases
+
+```{r predict, echo = TRUE, cache = TRUE}
+predictionDT_final <- predict(model, dt_testing, type = "class")
+predictionDT_final
+
+predictionRF_final <- predict(model_RF, dt_testing, type = "class")
+predictionRF_final
+```
+
+## Conclusion
+
+Using the both models, there is likely to be around <= 25% error. As a result, we can expect around 75% accuracy.
